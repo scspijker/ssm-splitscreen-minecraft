@@ -1,0 +1,17 @@
+{
+    "components": [
+        {
+            "cachedName": "Minecraft",
+            "cachedRequires": [
+                {
+                    "uid": "org.lwjgl3"
+                }
+            ],
+            "cachedVersion": "<mc_version>",
+            "important": true,
+            "uid": "net.minecraft",
+            "version": "<mc_version>"
+        }
+    ],
+    "formatVersion": 1
+}
