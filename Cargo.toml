@@ -13,3 +13,7 @@ env_logger = "0"
 chrono = "0.4.44"
 fern = "0.7.1"
 regex = "1"
+
+[dev-dependencies]
+rstest = "0.22"
+tempfile = "3"

@@ -1,22 +1,25 @@
-use std::{fs, io};
-use std::path::{PathBuf};
-use std::process::Command;
 use dialog::DialogBox;
-use log::info;
+use std::fs;
+use std::path::PathBuf;
+use std::process::Command;
 
 pub fn init() {
     if !is_installed() {
-        let choice = dialog::Question::new("PolyMC is not installed.\n\nWould you like to open Discover to install it now?")
-            .title("PolyMC not installed")
-            .show()
-            .expect("Could not display dialog box");
+        let choice = dialog::Question::new(
+            "PolyMC is not installed.\n\nWould you like to open Discover to install it now?",
+        )
+        .title("PolyMC not installed")
+        .show()
+        .expect("Could not display dialog box");
 
         if choice == dialog::Choice::Yes {
             Command::new("plasma-discover")
                 .arg("--application")
                 .arg("appstream:org.polymc.PolyMC")
                 .spawn()
-                .expect("Could not launch plasma-discover");
+                .expect("Could not launch plasma-discover")
+                .wait()
+                .expect("Failed to wait for plasma-discover");
         }
 
         eprintln!("Please install PolyMC from Discover, and restart ssm_minecraft");
@@ -24,6 +27,7 @@ pub fn init() {
     }
 }
 
+#[allow(dead_code)]
 fn prepare_profiles() {
     // PolyMC paths
     let poly_dir = get_dir();
@@ -37,14 +41,21 @@ fn prepare_profiles() {
 }
 
 fn is_installed() -> bool {
-    let output = Command::new("flatpak").arg("list").output()
+    let output = Command::new("flatpak")
+        .arg("list")
+        .output()
         .expect("Could not get list of flatpak installed packages");
 
     String::from_utf8_lossy(&output.stdout).contains("org.polymc.PolyMC")
 }
 
+#[allow(dead_code)]
 fn get_dir() -> PathBuf {
-    let output = Command::new("flatpak").arg("info").arg("-l").arg("org.polymc.PolyMC").output()
+    let output = Command::new("flatpak")
+        .arg("info")
+        .arg("-l")
+        .arg("org.polymc.PolyMC")
+        .output()
         .expect("Could not get PolyMC package info");
 
     PathBuf::from(String::from_utf8_lossy(&output.stdout).trim())
